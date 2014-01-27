@@ -171,7 +171,8 @@ class IntroJs extends CWidget {
      * Renders the element that triggers the start of the plugin
      */
     public function renderTriggerElement($pluginId, $tag = 'a', $tagOptions = array(), $tagContent = false) {
-        $tagOptions['onclick'] = "javascript:$pluginId.refresh().start();return false;";
+        $script = new CJavaScriptExpression(self::popArrayValue('onclick', $tagOptions, '')."$pluginId.refresh().start();return false;");
+        $tagOptions['onclick'] = "javascript:$script";
 
         if ($tag == 'htmlButton')
             $tag = $tagOptions['type'] = 'button';
