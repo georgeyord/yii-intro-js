@@ -101,7 +101,7 @@ class IntroJs extends CWidget {
         // Set default options
         self::defaultArrayValue('exitOnEsc', true, $options);
         self::defaultArrayValue('exitOnOverlayClick', false, $options);
-        //self::defaultArrayValue('showStepNumbers', false, $options);
+        self::defaultArrayValue('showStepNumbers', true, $options);
         self::defaultArrayValue('showBullets', true, $options);
         self::defaultArrayValue('doneLabel', 'Complete tour', $options);
         self::defaultArrayValue('skipLabel', 'Skip', $options);
@@ -140,8 +140,8 @@ class IntroJs extends CWidget {
                     $this->options['events']['oncomplete'] = $resetAccessible . $this->options['events']['oncomplete'];
                     $this->options['events']['onexit'] = $resetAccessible . $this->options['events']['onexit'];
                 }
-
-                $this->options['events'][$event] = $this->options['events'][$event] . sprintf('var element = $(targetElement).filter("%s");if(element.length>0){element.addClass("intro-js-not-accessible").css("pointer-events", "none");}' . PHP_EOL, $step['element']);
+                $element = new CJavaScriptExpression($step['element']);
+                $this->options['events'][$event] = $this->options['events'][$event] . sprintf('var element = $(targetElement).filter("%s");if(element.length>0){element.addClass("intro-js-not-accessible").css("pointer-events", "none");}' . PHP_EOL, $element);
             }
             // Directives for event callbacks specific to a step
             foreach (array('onbeforechange', 'onchange') as $event) {
@@ -150,7 +150,8 @@ class IntroJs extends CWidget {
                         $this->options['events'] = array();
                     if (!isset($this->options['events'][$event]))
                         $this->options['events'][$event] = '';
-                    $this->options['events'][$event] = sprintf('if($(targetElement).filter("%s").length>0){%s}' . PHP_EOL, $step['element'], $step[$event]) . $this->options['events'][$event];
+                    $element = new CJavaScriptExpression($step['element']);
+                    $this->options['events'][$event] = sprintf('if($(targetElement).filter("%s").length>0){%s}' . PHP_EOL, $element, $step[$event]) . $this->options['events'][$event];
                 }
             }
         }
